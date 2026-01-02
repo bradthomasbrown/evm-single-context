@@ -1,0 +1,9 @@
+- take out all state-observing stuff from the context. no storage, transient storage, accounts, etc.
+- we're then going to handle any "i need stuff from beyond what i can reach"exactly as a user-mode application would in any real machine:
+- "syscalls". we'll probably just use our "behavior function" pattern again, but the idea is this:
+- need the chain id? the opcode handler makes a syscall. a higher machine, sort of acting like an operating system for the lower one, will handle implementation
+- implementation is defined through our usual behavioral function parameters
+- when we log something? that causes a side effect which has absolutely no impact on execution. the log handler will call a syscall with inputs and then doesn't have to think about it further
+- CHAINID, NUMBER, BLOCKHASH, etc., all should be syscalls
+- SSTORE, SLOAD, TSTORE, should also be syscalls
+- precompiles should also be handled in a syscall related to STATICCALL or other CALL-type opcodes
