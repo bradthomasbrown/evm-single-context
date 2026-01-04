@@ -10,7 +10,7 @@ export default {
         // we wonder if making this an explicit branch would be more optimized
         // if ternaries are "optimized" into CMOVES
         // then F.divide would always be executed, which is probably more expensive than just branching
-        context.stack.push(b == 0n ? 0n : F.divide(a!, b!));
+        context.stack.push((b! % F.p) == 0n ? 0n : a! / b! % F.p);
         context.gas -= 5n;
         context.pc++;
     },
