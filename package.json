@@ -14,13 +14,14 @@
         "./opsets/9db704": "./dist/opsets/9db704/opset.js"
     },
     "dependencies": {
-        "@bradthomasbrown/75bb14": "^1.0.0",
+        "@bradthomasbrown/75bb14": "^1.0.1",
         "@bradthomasbrown/900ef2": "^1.0.0",
-        "@bradthomasbrown/ecdsa": "^2.0.1",
-        "@bradthomasbrown/entity": "^1.0.1",
-        "@bradthomasbrown/finite-field": "^2.0.5",
-        "@bradthomasbrown/keccak": "^1.0.1",
+        "@bradthomasbrown/ecdsa": "^2.0.3",
+        "@bradthomasbrown/entity": "^1.0.2",
+        "@bradthomasbrown/finite-field": "^2.0.6",
+        "@bradthomasbrown/keccak": "^1.0.2",
         "@bradthomasbrown/machine": "^1.0.0",
-        "@bradthomasbrown/rlp": "^1.0.0"
+        "@bradthomasbrown/rlp": "^1.0.0",
+        "@bradthomasbrown/sha": "^1.0.0"
     }
 }
