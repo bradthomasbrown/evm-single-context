@@ -8,7 +8,7 @@ export default {
     executor(context:Context) {
         const [offset, value] = pop(context.stack, 2);
         context.gas -= 3n;
-        memoryExpand(context, Number(offset) + 0x20);
+        memoryExpand(context, Number(offset) + 1);
         write(context.memory!, value!, Number(offset!), 1);
         context.pc++;
     },
