@@ -3,6 +3,13 @@ export { default as ADD } from "./opcodes/ADD.js";
 export { default as MUL } from "./opcodes/MUL.js";
 export { default as SUB } from "./opcodes/SUB.js";
 export { default as DIV } from "./opcodes/DIV.js";
+// SDIV
+export { default as MOD } from "./opcodes/MOD.js";
+// SMOD
+// ADDMOD
+export { default as MULMOD } from "./opcodes/MULMOD.js";
+export { default as EXP } from "./opcodes/EXP.js";
+export { default as SIGNEXTEND } from "./opcodes/SIGNEXTEND.js";
 export { default as LT } from "./opcodes/LT.js";
 export { default as GT } from "./opcodes/GT.js";
 export { default as SLT } from "./opcodes/SLT.js";
@@ -12,41 +19,66 @@ export { default as ISZERO } from "./opcodes/ISZERO.js";
 export { default as AND } from "./opcodes/AND.js";
 export { default as OR } from "./opcodes/OR.js";
 export { default as XOR } from "./opcodes/XOR.js";
-export { default as BYTE } from "./opcodes/BYTE.js";
 export { default as NOT } from "./opcodes/NOT.js";
+export { default as BYTE } from "./opcodes/BYTE.js";
 export { default as SHL } from "./opcodes/SHL.js";
 export { default as SHR } from "./opcodes/SHR.js";
+// SAR (do not redeem)
+// CLZ
 export { default as KECCAK256 } from "./opcodes/KECCAK256.js";
 export { default as ADDRESS } from "./opcodes/ADDRESS.js";
+export { default as BALANCE } from "./opcodes/BALANCE.js";
+export { default as ORIGIN } from "./opcodes/ORIGIN.js";
 export { default as CALLER } from "./opcodes/CALLER.js";
 export { default as CALLVALUE } from "./opcodes/CALLVALUE.js";
 export { default as CALLDATALOAD } from "./opcodes/CALLDATALOAD.js";
 export { default as CALLDATASIZE } from "./opcodes/CALLDATASIZE.js";
 export { default as CALLDATACOPY } from "./opcodes/CALLDATACOPY.js";
+export { default as CODESIZE } from "./opcodes/CODESIZE.js";
 export { default as CODECOPY } from "./opcodes/CODECOPY.js";
+// GASPRICE
 export { default as EXTCODESIZE } from "./opcodes/EXTCODESIZE.js";
 export { default as EXTCODECOPY } from "./opcodes/EXTCODECOPY.js";
 export { default as RETURNDATASIZE } from "./opcodes/RETURNDATASIZE.js";
+export { default as RETURNDATACOPY } from "./opcodes/RETURNDATACOPY.js";
+// EXTCODEHASH
+// BLOCKHASH
+export { default as COINBASE } from "./opcodes/COINBASE.js";
 export { default as TIMESTAMP } from "./opcodes/TIMESTAMP.js";
+export { default as NUMBER } from "./opcodes/NUMBER.js";
+// PREVRANDAO
+// GASLIMIT
 export { default as CHAINID } from "./opcodes/CHAINID.js";
+export { default as SELFBALANCE } from "./opcodes/SELFBALANCE.js";
+export { default as BASEFEE } from "./opcodes/BASEFEE.js";
+// BLOBHASH
+// BLOBBASEFEE
 export { default as POP } from "./opcodes/POP.js";
 export { default as MLOAD } from "./opcodes/MLOAD.js";
 export { default as MSTORE } from "./opcodes/MSTORE.js";
+export { default as MSTORE8 } from "./opcodes/MSTORE8.js";
 export { default as SLOAD } from "./opcodes/SLOAD.js";
 export { default as SSTORE } from "./opcodes/SSTORE.js"
 export { default as JUMP } from "./opcodes/JUMP.js";
 export { default as JUMPI } from "./opcodes/JUMPI.js";
+// PC
 export { default as MSIZE } from "./opcodes/MSIZE.js";
 export { default as GAS } from "./opcodes/GAS.js";
 export { default as JUMPDEST } from "./opcodes/JUMPDEST.js";
 export { default as TLOAD } from "./opcodes/TLOAD.js";
 export { default as TSTORE } from "./opcodes/TSTORE.js";
+export { default as MCOPY } from "./opcodes/MCOPY.js";
 export { default as PUSH } from "./opcodes/PUSH.js";
 export { default as DUP } from "./opcodes/DUP.js";
 export { default as SWAP } from "./opcodes/SWAP.js";
 export { default as LOG } from "./opcodes/LOG.js";
 export { default as CREATE } from "./opcodes/CREATE.js";
+export { default as CALL } from "./opcodes/CALL.js";
+// CALLCODE
 export { default as RETURN } from "./opcodes/RETURN.js";
+export { default as DELEGATECALL } from "./opcodes/DELEGATECALL.js";
 export { default as CREATE2 } from "./opcodes/CREATE2.js";
 export { default as STATICCALL } from "./opcodes/STATICCALL.js";
 export { default as REVERT } from "./opcodes/REVERT.js";
+export { default as INVALID } from "./opcodes/INVALID.js";
+// SELFDESTRUCT
