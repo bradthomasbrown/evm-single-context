@@ -10,6 +10,7 @@ export default {
         context.gas -= 3n + 3n * (size! + 0x1fn >> 5n);
         memoryExpand(context, Number(offset) + Number(size));
         copy(context.memory!, context.subcontext === null ? null : context.subcontext.returndata, Number(destOffset), Number(offset), Number(size), true);
+        context.pc++;
     },
 
     instructionToString() {
