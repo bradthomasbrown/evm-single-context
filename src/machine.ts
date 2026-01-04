@@ -145,6 +145,7 @@ function buildTraceObject(context:Context) {
         gas:number,
         gasCost:number
         depth:number,
+        error?:string
         stack:Array<string>,
         returnData?:string,
         memory?:Array<string>,
@@ -158,6 +159,8 @@ function buildTraceObject(context:Context) {
         depth: traceHelper.depth!,
         stack: traceHelper.stack!
     };
+    if (traceHelper.op == "INVALID") traceObject.gasCost = 0; // i don't know why
+    if (gasCost > traceHelper.gas!) traceObject.error = "out of gas";
     if (traceHelper.returnData !== null) traceObject.returnData = traceHelper.returnData;
     if (traceHelper.memoryWords !== null) traceObject.memory = traceHelper.memoryWords;
     if (traceHelper.op! == "SLOAD" || traceHelper.op! == "SSTORE") traceObject.storage = traceHelper.storage!;
@@ -170,6 +173,8 @@ const traceObjects:Array<ReturnType<typeof buildTraceObject>> = []
 function postExecute(context:Context) {
 
     if (debug === true) traceObjects.push(buildTraceObject(context));
+
+    if (context.gas < 0n) { context.reverted = true; return; }
 
     if (context.pc < context.code!.byteLength) return;
 
