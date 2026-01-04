@@ -31,7 +31,7 @@ export default {
 
         let A_r = 0n;
         if ((currentValue != newValue) && (originalValue == currentValue) && (newValue == 0n)) A_r = 4800n;
-        if ((currentValue != newValue) && (originalValue != currentValue)) A_r = r_dirtyreset + r_dirtyreset;
+        if ((currentValue != newValue) && (originalValue != currentValue)) A_r = r_dirtyclear + r_dirtyreset;
 
         context.gas -= C_sstore_0 + C_sstore_1!;
         context.refund += A_r;
