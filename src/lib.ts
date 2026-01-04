@@ -93,7 +93,6 @@ function createContext(partialContext:PartialContext):Context {
         sender: partialContext.sender,
         to: partialContext.to ?? null,
         address: partialContext.address ?? null,
-        value: partialContext.value ?? 0n,
         pc: partialContext.pc ?? 0,
         gas: partialContext.gas ?? 0n,
         stack: partialContext.stack ?? [],
