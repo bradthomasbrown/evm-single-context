@@ -8,8 +8,9 @@ export default {
     // only partially implemented
     executor(context:Context, artifact:Artifact) {
         const [offset, size, ...topics] = pop(context.stack, 2 + artifact.variant!);
-        memoryExpand(context, Number(offset!) + Number(size!));
         context.gas -= 375n * BigInt(topics.length + 1) + 8n * size!;
+        if (context.gas < 0n) { context.reverted = true; return; }
+        memoryExpand(context, Number(offset!) + Number(size!));
         context.pc++;
     },
 
