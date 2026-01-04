@@ -8,7 +8,6 @@ type Context = {
     sender:string,
     to:null|string,
     address:null|string,
-    value:bigint,
     pc:number,
     gas:bigint,
     stack:Array<bigint>
@@ -43,7 +42,7 @@ type Artifact = {
 type PartialContext = {
     origin:string,
     sender:string,
-    code:ArrayBuffer
+    code:null|ArrayBuffer
 } & Partial<Context>;
 
 export type { MapComponents, Context, Artifact, PartialContext };
