@@ -1,5 +1,6 @@
 import type { Context } from "../../../types.js";
 import { keccak256 } from "@bradthomasbrown/keccak/keccak256";
+import { sha256 } from "@bradthomasbrown/sha";
 import { _780119_ } from "@bradthomasbrown/ecdsa/concrete";
 import { peek, pop, memoryExpand, createContext, numberToHex, getStateValue, byteSliceToBigInt_be, copy } from "../../../lib.js";
 
@@ -10,9 +11,11 @@ export default {
     executor(context:Context) {
         if (context.blocked) {
             // if there was no code at the address
-            if (context.subcontext === null) {
+            if (context.subcontext!.code === null) {
                 const [_gas, address, argsOffset, argsSize, retOffset, retSize] = pop(context.stack, 6);
                 let C_precompile = 0n;
+                // we should probably remove the subcontext creation and assignments
+                // from these, since we changed things to the subcontext is not null in this branch
                 if (address == 1n) {
                     C_precompile = 3000n;
                     const data = new Uint8Array(context.memory!.slice(Number(argsOffset), Number(argsOffset) + Number(argsSize)));
@@ -30,7 +33,6 @@ export default {
                     const returndata = new ArrayBuffer(32);
                     const addressBytes = keccak256(qBytes).fill(0, 0, 12).buffer as ArrayBuffer;
                     copy(returndata, addressBytes, 12, 12, 20, false);
-                    memoryExpand(context, Number(retOffset) + Number(retSize));
                     copy(context.memory!, addressBytes, Number(retOffset), 0, Number(retSize), false);
                     context.subcontext = createContext({
                         origin: context.origin,
@@ -40,17 +42,42 @@ export default {
                         returndata,
                         reverted: false // machine will not continue without this, rightfully so
                     });
+                } else if (address == 2n) {
+                    const data = new Uint8Array(context.memory!.slice(Number(argsOffset), Number(argsOffset) + Number(argsSize)));
+                    C_precompile = 60n + 12n * BigInt(data.byteLength + 0x1f >> 5);
+                    const returndata = sha256(data);
+                    copy(context.memory!, returndata.buffer, Number(retOffset), 0, Number(retSize), false);
+                    context.subcontext = createContext({
+                        origin: context.origin,
+                        sender: context.address!,
+                        to: `0x${"2".padStart(40, '0')}`,
+                        code: new ArrayBuffer(),
+                        returndata: returndata.buffer,
+                        reverted: false
+                    });
+                } else if (address == 4n) {
+                    const data = new Uint8Array(context.memory!.slice(Number(argsOffset), Number(argsOffset) + Number(argsSize)));
+                    C_precompile = 15n + 3n * BigInt(data.byteLength + 0x1f >> 5);
+                    copy(context.memory!, data.buffer, Number(retOffset), 0, Number(retSize), false);
+                    context.subcontext = createContext({
+                        origin: context.origin,
+                        sender: context.address!,
+                        to: `0x${"4".padStart(40, '0')}`,
+                        code: new ArrayBuffer(),
+                        returndata: data.buffer,
+                        reverted: false
+                    });
                 }
-                context.stack.push(1n);
+                context.stack.push(context.subcontext!.reverted === false ? 1n: 0n);
                 context.gas += context.L! - C_precompile;
                 context.blocked = false;
                 context.pc++;
             } else {
                 if (context.subcontext!.reverted === null) return;
                 const [_gas, _address, _argsOffset, _argsSize, _retOffset, _retSize] = pop(context.stack, 6);
-                if (context.states.at(-1)!.accounts === null) context.states.at(-1)!.accounts = new Map();
+                // if (context.states.at(-1)!.accounts === null) context.states.at(-1)!.accounts = new Map();
                 context.stack.push(context.subcontext!.reverted === false ? 1n : 0n);
-                context.states.at(-1)!.accounts!.set(context.subcontext!.address!, { nonce: 1n, balance: context.subcontext!.value, code: context.subcontext!.returndata });
+                // context.states.at(-1)!.accounts!.set(context.subcontext!.address!, { nonce: 1n, balance: context.subcontext!.value, code: context.subcontext!.returndata });
                 context.gas += context.subcontext!.gas - (context.subcontext!.returndata === null ? 0n : 200n * BigInt(context.subcontext!.returndata.byteLength!));
                 context.blocked = false;
                 context.pc++;
@@ -58,7 +85,13 @@ export default {
         } else {
             const [gas, address, argsOffset, argsSize, retOffset, retSize] = peek(context.stack, 6);
 
-            memoryExpand(context, Math.max(Number(argsOffset!) + Number(argsSize!), Number(retOffset!) + Number(retSize)));
+            memoryExpand(
+                context,
+                Math.max(
+                    argsSize! == 0n ? 0 : Number(argsOffset!) + Number(argsSize!),
+                    retSize! == 0n ? 0 : Number(retOffset!) + Number(retSize)
+                )
+            );
 
             const addressHex = `0x${numberToHex(address!, 40)}`;
 
@@ -72,9 +105,12 @@ export default {
 
             const C_extra = C_aaccess + C_xfer + C_new;
 
-            const _ad_ = context.gas - C_extra;
-            const L = _ad_ < 0n ? 0n: _ad_ - (_ad_ >> 6n);
-            const C_gascap = L < gas! ? L : gas!;
+            let C_gascap = gas!;
+            if (context.gas >= C_extra) {
+                const _ad_ = context.gas - C_extra;
+                const L = _ad_ - (_ad_ >> 6n); 
+                C_gascap = L < gas! ? L : gas!;
+            }
 
             const C_callgas = C_gascap;
 
@@ -85,8 +121,19 @@ export default {
 
             const code = getStateValue(context.states, null, "accounts", [addressHex])?.code ?? null;
             if (code === null) {
-                context.blocked = true; // sketchy, needed for gas cost to be "right"
-                context.subcontext = null;
+                context.blocked = true;
+                context.subcontext = createContext({
+                    origin: context.origin,
+                    sender: context.address!,
+                    address: addressHex,
+                    gas: C_callgas,
+                    states: context.states,
+                    accountAccessSet: context.accountAccessSet,
+                    storageAccessSet: context.storageAccessSet,
+                    depth: context.depth + 1,
+                    code,
+                    reverted: false
+                });
             } else {
                 context.subcontext = createContext({
                     origin: context.origin,
