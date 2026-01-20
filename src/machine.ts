@@ -82,7 +82,7 @@ let traceHelper:{
     stack:null|Array<string>,
     returnData:null|string,
     memoryWords:null|Array<string>,
-    storage:null|{ [key:string]: string },
+    storage:null|{ [key:string]: { [key:string]: string } },
     stop:null|boolean
 } = { instruction:null, gas:null, pc:null, op:null, depth:null, stack:null, returnData:null, memoryWords:null, storage:null, stop:null };
 
