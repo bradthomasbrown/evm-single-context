@@ -7,7 +7,7 @@ export default {
 
     executor(context:Context) {
         const [a, b] = pop(context.stack, 2);
-        context.stack.push(F.multiply(a!, b!));
+        context.stack.push(a! * b! % F.p);
         context.gas -= 5n;
         context.pc++;
     },
