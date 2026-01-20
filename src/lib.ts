@@ -109,7 +109,7 @@ function createContext(partialContext:PartialContext):Context {
         blocked: partialContext.blocked ?? false,
         reverted: partialContext.reverted ?? null,
         states: partialContext.states ?? [{ accounts: null, transientStorage: null, storage: null }],
-        refund: partialContext.refund ?? 0n,
+        refund: partialContext.refund ?? { value: 0n },
         code: partialContext.code ?? null,
         memoryWords: 0,
         L: null
