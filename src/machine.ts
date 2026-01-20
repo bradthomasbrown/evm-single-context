@@ -217,7 +217,11 @@ function postExecute(context:Context) {
 
     if (debug === true) traceObjects.push(buildTraceObject(context));
 
-    if (context.gas < 0n) { context.reverted = true; return; }
+    if (context.gas < 0n) {
+        // console.log("REVERT: OUT OF GAS (evm-single-context → post-execute)");
+        context.reverted = true;
+        return;
+    }
 
     if (context.pc < context.code!.byteLength) return;
 
