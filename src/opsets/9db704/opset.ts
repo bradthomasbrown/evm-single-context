@@ -3,9 +3,9 @@ export { default as ADD } from "./opcodes/ADD.js";
 export { default as MUL } from "./opcodes/MUL.js";
 export { default as SUB } from "./opcodes/SUB.js";
 export { default as DIV } from "./opcodes/DIV.js";
-// SDIV
+export { default as SDIV } from "./opcodes/SDIV.js";
 export { default as MOD } from "./opcodes/MOD.js";
-// SMOD
+export { default as SMOD } from "./opcodes/SMOD.js";
 // ADDMOD
 export { default as MULMOD } from "./opcodes/MULMOD.js";
 export { default as EXP } from "./opcodes/EXP.js";
@@ -23,7 +23,7 @@ export { default as NOT } from "./opcodes/NOT.js";
 export { default as BYTE } from "./opcodes/BYTE.js";
 export { default as SHL } from "./opcodes/SHL.js";
 export { default as SHR } from "./opcodes/SHR.js";
-// SAR (do not redeem)
+export { default as SAR } from "./opcodes/SAR.js";
 // CLZ
 export { default as KECCAK256 } from "./opcodes/KECCAK256.js";
 export { default as ADDRESS } from "./opcodes/ADDRESS.js";
