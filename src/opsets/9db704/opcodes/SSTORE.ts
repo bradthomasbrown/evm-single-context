@@ -14,7 +14,7 @@ export default {
         else (context.storageAccessSet.get(context.address!)!.add(key!));
 
         const originalValue = getStateValue(context.states, 0, "storage", [context.address!, key!]) ?? 0n;
-        const currentValue = getStateValue(context.states, null, "storage", [context.address!, key!]) ?? 0n;
+        const currentValue = getStateValue(context.states, context.states.length - 1, "storage", [context.address!, key!]) ?? 0n;
 
         let C_sstore_1:null|bigint = null;
         if ((currentValue == newValue) || (originalValue != currentValue)) C_sstore_1 = 100n;
