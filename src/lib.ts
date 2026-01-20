@@ -104,6 +104,7 @@ function createContext(partialContext:PartialContext):Context {
         storageAccessSet: partialContext.storageAccessSet ?? new Map(),
         depth: partialContext.depth ?? 1,
         calldata: partialContext.calldata ?? null,
+        value: partialContext.value ?? 0n,
         subcontext: partialContext.subcontext ?? null,
         blocked: partialContext.blocked ?? false,
         reverted: partialContext.reverted ?? null,
