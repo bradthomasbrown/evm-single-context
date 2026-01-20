@@ -34,7 +34,7 @@ export default {
         if ((currentValue != newValue) && (originalValue != currentValue)) A_r = r_dirtyclear + r_dirtyreset;
 
         context.gas -= C_sstore_0 + C_sstore_1!;
-        context.refund += A_r;
+        if (A_r != 0n) context.refund.value += A_r;
 
         const state = context.states.at(-1)!;
         if (state.storage === null) state.storage = new Map();
