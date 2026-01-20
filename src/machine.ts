@@ -6,16 +6,28 @@ import * as opset from "./opsets/9db704/opset.js";
 function continuePredicate(context:Context) {
 
     // if revert is known (true or false, not null), don't continue
-    if (context.reverted !== null) return false;
+    if (context.reverted !== null) {
+        // console.log("NO CONTINUE: REVERT KNOWN");
+        return false;
+    }
 
     // if there is no code, don't continue
-    if (context.code === null) return false;
+    if (context.code === null) {
+        // console.log("NO CONTINUE: NO CODE");
+        return false;
+    }
 
     // if the program counter is beyond the code length, don't continue
-    if (context.pc >= context.code.byteLength) return false;
+    if (context.pc >= context.code.byteLength) {
+        // console.log("NO CONTINUE: PC BEYOND CODE LENGTH");
+        return false;
+    }
 
     // if there is an incomplete subcontext, don't continue
-    if (context.subcontext !== null && context.subcontext.reverted === null) return false;
+    if (context.subcontext !== null && context.subcontext.reverted === null) {
+        // console.log("NO CONTINUE: INCOMPLETE SUBCONTEXT");
+        return false;
+    }
 
     // otherwise, continue
     return true;
