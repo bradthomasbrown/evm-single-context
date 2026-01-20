@@ -124,7 +124,7 @@ function preExecute(context:Context) {
             copy(wordBytes, context.memory, 0, i, 0x20, true);
             traceHelper.memoryWords.push(new Uint8Array(wordBytes).toHex());
         }
-    }
+    } else traceHelper.memoryWords = null;
     if (instruction == 0x54) {
         const [key] = peek(context.stack, 1);
         const value = getStateValue(context.states, null, "storage", [context.address!, key!]) ?? 0n;
