@@ -10,7 +10,7 @@ export default {
         const [offset, size, ...topics] = pop(context.stack, 2 + artifact.variant!);
         context.gas -= 375n * BigInt(topics.length + 1) + 8n * size!;
         if (context.gas < 0n) {
-            console.log("REVERT: OUT OF GAS (LOG)");
+            // console.log("REVERT: OUT OF GAS (LOG)");
             context.reverted = true;
             return;
         }
