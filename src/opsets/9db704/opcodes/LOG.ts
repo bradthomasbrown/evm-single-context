@@ -9,7 +9,11 @@ export default {
     executor(context:Context, artifact:Artifact) {
         const [offset, size, ...topics] = pop(context.stack, 2 + artifact.variant!);
         context.gas -= 375n * BigInt(topics.length + 1) + 8n * size!;
-        if (context.gas < 0n) { context.reverted = true; return; }
+        if (context.gas < 0n) {
+            console.log("REVERT: OUT OF GAS (LOG)");
+            context.reverted = true;
+            return;
+        }
         memoryExpand(context, Number(offset!) + Number(size!));
         context.pc++;
     },
