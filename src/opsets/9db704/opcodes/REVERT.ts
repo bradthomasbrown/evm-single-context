@@ -7,6 +7,7 @@ export default {
 
     executor(context:Context) {
         const [offset, size] = pop(context.stack, 2);
+        // console.log("REVERT: REVERT");
         context.reverted = true;
         if (size === 0n) return;
         memoryExpand(context, Number(offset) + Number(size));

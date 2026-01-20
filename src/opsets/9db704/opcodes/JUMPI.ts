@@ -9,7 +9,11 @@ export default {
         const [counter, b] = pop(context.stack, 2);
         context.gas -= 10n;
         if (b === 0n) { context.pc++; return; }
-        if (new Uint8Array(context.code!)[Number(counter)] !== 0x5b) { context.reverted = true; return; }
+        if (new Uint8Array(context.code!)[Number(counter)] !== 0x5b) {
+            console.log("REVERT: JUMP TO NON-JUMPDEST (JUMPI)");
+            context.reverted = true;
+            return;
+        }
         context.pc = Number(counter);
     },
 

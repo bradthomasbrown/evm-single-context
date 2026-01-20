@@ -8,7 +8,11 @@ export default {
     executor(context:Context) {
         const [counter] = pop(context.stack, 1);
         context.gas -= 8n;
-        if (new Uint8Array(context.code!)[Number(counter)] !== 0x5b) { context.reverted = true; return; }
+        if (new Uint8Array(context.code!)[Number(counter)] !== 0x5b) {
+            console.log("REVERT: JUMP TO NON-JUMPDEST (JUMP)");
+            context.reverted = true;
+            return;
+        }
         context.pc = Number(counter);
     },
 
