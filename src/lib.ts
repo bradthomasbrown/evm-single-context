@@ -112,7 +112,8 @@ function createContext(partialContext:PartialContext):Context {
         refund: partialContext.refund ?? { value: 0n },
         code: partialContext.code ?? null,
         memoryWords: 0,
-        L: null
+        L: null,
+        delegatecall: partialContext.delegatecall ?? false
     };
 }
 
