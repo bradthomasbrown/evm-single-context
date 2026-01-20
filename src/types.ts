@@ -18,6 +18,7 @@ type Context = {
     storageAccessSet:Map<string,Set<bigint>>,
     depth:number,
     calldata:null|ArrayBuffer,
+    value:bigint,
     subcontext:null|Context,
     blocked:boolean,
     reverted:null|boolean,
@@ -26,10 +27,11 @@ type Context = {
         transientStorage:null|Map<string,Map<bigint,bigint>>,
         storage:null|Map<string,Map<bigint,bigint>>
     }>,
-    refund:bigint,
+    refund:{ value:bigint },
     code:null|ArrayBuffer,
     memoryWords:number,
-    L:null|bigint
+    L:null|bigint,
+    delegatecall:boolean
 };
 
 type Artifact = {
@@ -42,7 +44,6 @@ type Artifact = {
 type PartialContext = {
     origin:string,
     sender:string,
-    code:null|ArrayBuffer
 } & Partial<Context>;
 
 export type { MapComponents, Context, Artifact, PartialContext };
