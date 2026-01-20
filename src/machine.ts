@@ -243,6 +243,41 @@ function initialize(context:Context) {
         context.address = deriveAddress(context);
         context.code = context.calldata;
     }
+    
+    if (
+           // if no value, don't transfer
+           context.value != 0n
+           // if we call ourselves for some reason, don't transfer
+        && context.address! != context.sender
+           // if it's a delegatecall, don't transfer
+        && !context.delegatecall
+    ) {
+        // console.log(`transferring ${context.value} from ${context.sender} to ${context.address}`);
+        const senderAccount = getStateValue(context.states, null, "accounts", [context.sender]);
+        const account = getStateValue(context.states, null, "accounts", [context.address!]);
+        const accounts:typeof context["states"][number]["accounts"] = new Map();
+        // console.log({
+        //     contextValue: context.value,
+        //     senderAddress: context.sender,
+        //     senderBalance: senderAccount!.balance,
+        //     contextAddress: context.address,
+        //     contextBalance: account!.balance,
+        // });
+        accounts.set(context.sender, {
+            nonce: senderAccount!.nonce,
+            balance: senderAccount!.balance - context.value,
+            code: senderAccount!.code
+        });
+        accounts.set(context.address!, {
+            nonce: account === null ? 0n : account.nonce,
+            balance: account === null ? context.value : account.balance + context.value,
+            code: account === null ? null : account.code
+        });
+        context.states.at(-1)!.accounts = accounts;
+    }
+
+    context.accountAccessSet.add(context.sender);
+    context.accountAccessSet.add(context.address!);
 
 }
 
