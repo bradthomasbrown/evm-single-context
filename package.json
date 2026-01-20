@@ -1,7 +1,7 @@
 {
     "name": "@bradthomasbrown/evm-single-context",
     "description": "An implementation of a single-context ethereum virtual machine in JavaScript/TypeScript.",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "Brad Brown <https://t.me/bradthomasbrown>",
     "type": "module",
     "files": [
