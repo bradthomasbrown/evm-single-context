@@ -128,12 +128,43 @@ function preExecute(context:Context) {
     if (instruction == 0x54) {
         const [key] = peek(context.stack, 1);
         const value = getStateValue(context.states, null, "storage", [context.address!, key!]) ?? 0n;
+        // if (traceHelper.storage === null) traceHelper.storage = {};
+        // had to change this because apparently we don't show storage in trace objects if storage was touched in a different single-context
+        // we might have to do this for SSTORE as well, but for now, this change made things work when applied only to SLOAD
+        // yep, have to do this for SSTORE
+        // actually, nope. we have another issue. it might be that we had storage from other addresses before?
+        // so maybe we want to show all storage touches for the current context address
+        // i have a bad feeling that we had a problem before but it may have only revealed itself due to a delegatecall
+        // if that feeling is correct, we may have to only show storage touches for the same "to" address?
+        // it seems our main previous problem was that if we SLOAD then that touched key needs to be tracked
+        //  even though it would not modify the state diff structure in any way
+        // and we need to track which addresses have touched which keys 
+
+        // traceHelper.storage = {};
+        // for (const state of context.states.slice(1))
+        //     if (state.storage !== null && state.storage!.has(context.address!))
+        //         for (const [key, value] of state.storage!.get(context.address!)!)
+        //             traceHelper.storage[numberToHex(key!, 64)] = numberToHex(value, 64);
+        // traceHelper.storage[numberToHex(key!, 64)] = numberToHex(value, 64);
+
         if (traceHelper.storage === null) traceHelper.storage = {};
-        traceHelper.storage[numberToHex(key!, 64)] = numberToHex(value, 64);
+        if (!(context.address! in traceHelper.storage)) traceHelper.storage[context.address!] = {};
+        traceHelper.storage[context.address!]![numberToHex(key!, 64)] = numberToHex(value!, 64);
     } else if (instruction == 0x55) {
         const [key, value] = peek(context.stack, 2);
+
+        // if (traceHelper.storage === null) traceHelper.storage = {};
+
+        // traceHelper.storage = {};
+        // for (const state of context.states.slice(1))
+        //     if (state.storage !== null && state.storage!.has(context.address!))
+        //         for (const [key, value] of state.storage!.get(context.address!)!)
+        //             traceHelper.storage[numberToHex(key!, 64)] = numberToHex(value, 64);
+        // traceHelper.storage[numberToHex(key!, 64)] = numberToHex(value!, 64);
+
         if (traceHelper.storage === null) traceHelper.storage = {};
-        traceHelper.storage[numberToHex(key!, 64)] = numberToHex(value!, 64);
+        if (!(context.address! in traceHelper.storage)) traceHelper.storage[context.address!] = {};
+        traceHelper.storage[context.address!]![numberToHex(key!, 64)] = numberToHex(value!, 64);
     }
     traceHelper.stop = instruction == 0x00;
 }
