@@ -10,9 +10,9 @@ export default {
         context.gas -= 3n;
         if (context.calldata === null) {
             context.stack.push(0n);
-            return;
+        } else {
+            context.stack.push(byteSliceToBigInt_be(new Uint8Array(context.calldata), Number(i!), 0x20, true));
         }
-        context.stack.push(byteSliceToBigInt_be(new Uint8Array(context.calldata), Number(i!), 0x20, true));
         context.pc++;
     },
 
