@@ -206,8 +206,8 @@ function buildTraceObject(context:Context) {
     if (gasCost > traceHelper.gas!) traceObject.error = "out of gas";
     if (traceHelper.returnData !== null) traceObject.returnData = traceHelper.returnData;
     if (traceHelper.memoryWords !== null) traceObject.memory = traceHelper.memoryWords;
-    if (traceHelper.op! == "SLOAD" || traceHelper.op! == "SSTORE") traceObject.storage = traceHelper.storage!;
-    if (context.refund != 0n) traceObject.refund = Number(context.refund);
+    if (traceHelper.op! == "SLOAD" || traceHelper.op! == "SSTORE") traceObject.storage = traceHelper.storage![context.address!]!;
+    if (context.refund.value != 0n) traceObject.refund = Number(context.refund!.value);
     return traceObject;
 }
 
