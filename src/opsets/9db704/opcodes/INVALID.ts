@@ -7,6 +7,7 @@ export default {
 
     executor(context:Context) {
         pop(context.stack, 2);
+        // console.log("REVERT: INVALID");
         context.reverted = true;
         context.gas = 0n;
     },
