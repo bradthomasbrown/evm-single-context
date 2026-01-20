@@ -74,11 +74,12 @@ export default {
                 context.pc++;
             } else {
                 if (context.subcontext!.reverted === null) return;
-                const [_gas, _address, _argsOffset, _argsSize, _retOffset, _retSize] = pop(context.stack, 6);
+                const [_gas, _address, _argsOffset, _argsSize, retOffset, retSize] = pop(context.stack, 6);
+                copy(context.memory!, context.subcontext!.returndata, Number(retOffset), 0, Number(retSize), false);
                 // if (context.states.at(-1)!.accounts === null) context.states.at(-1)!.accounts = new Map();
                 context.stack.push(context.subcontext!.reverted === false ? 1n : 0n);
                 // context.states.at(-1)!.accounts!.set(context.subcontext!.address!, { nonce: 1n, balance: context.subcontext!.value, code: context.subcontext!.returndata });
-                context.gas += context.subcontext!.gas - (context.subcontext!.returndata === null ? 0n : 200n * BigInt(context.subcontext!.returndata.byteLength!));
+                context.gas += context.subcontext!.gas;
                 context.blocked = false;
                 context.pc++;
             }
@@ -100,6 +101,7 @@ export default {
             const C_xfer = 0n;
 
             let C_aaccess = 2600n;
+            // console.log(context.accountAccessSet);
             if (context.accountAccessSet.has(addressHex)) C_aaccess = 100n;
             else (context.accountAccessSet.add(addressHex));
 
@@ -125,6 +127,8 @@ export default {
                 context.subcontext = createContext({
                     origin: context.origin,
                     sender: context.address!,
+                    to: addressHex,
+                    calldata: argsSize! === 0n ? null : context.memory!.slice(Number(argsOffset), Number(argsOffset) + Number(argsSize)),
                     address: addressHex,
                     gas: C_callgas,
                     states: context.states,
@@ -132,21 +136,25 @@ export default {
                     storageAccessSet: context.storageAccessSet,
                     depth: context.depth + 1,
                     code,
-                    reverted: false
+                    reverted: false,
+                    refund: context.refund
                 });
             } else {
                 context.subcontext = createContext({
                     origin: context.origin,
                     sender: context.address!,
+                    to: addressHex,
+                    calldata: argsSize! === 0n ? null : context.memory!.slice(Number(argsOffset), Number(argsOffset) + Number(argsSize)),
                     address: addressHex,
                     gas: C_callgas,
                     states: context.states,
                     accountAccessSet: context.accountAccessSet,
                     storageAccessSet: context.storageAccessSet,
                     depth: context.depth + 1,
-                    code
+                    code,
+                    refund: context.refund
                 });
-                context.states.push({ accounts: null, transientStorage: null, storage: null });
+                // context.states.push({ accounts: null, transientStorage: null, storage: null });
                 context.blocked = true;
             }
         }
