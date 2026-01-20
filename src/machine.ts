@@ -236,6 +236,8 @@ function postExecute(context:Context) {
 
 function initialize(context:Context) {
 
+    context.states.push({ accounts:null, transientStorage:null, storage:null });
+
     if (context.address === null && context.to !== null) context.address = context.to;
 
     // for EoA deployments, address is null, but we'll need it in execution
