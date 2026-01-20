@@ -55,11 +55,12 @@ function memoryExpand(context:Context, size:number) {
     if (size == 0) return;
     if (context.memory === null) context.memory = new ArrayBuffer(1);
     const memoryWords = (size + 0x1f) >> 5;
-    if (context.memoryWords >= memoryWords) return;
-    const C_mem = 3n * BigInt(memoryWords) + BigInt(memoryWords) ** 2n / 512n;
-    context.gas -= C_mem - context.C_mem_prev;
-    context.memoryWords = memoryWords;
-    context.C_mem_prev = C_mem;
+    if (context.memoryWords < memoryWords) {
+        const C_mem = 3n * BigInt(memoryWords) + BigInt(memoryWords) ** 2n / 512n;
+        context.gas -= C_mem - context.C_mem_prev;
+        context.memoryWords = memoryWords;
+        context.C_mem_prev = C_mem;
+    }
     while (context.memory.byteLength < size)
         context.memory = context.memory.transfer(context.memory.byteLength << 1);
 }
