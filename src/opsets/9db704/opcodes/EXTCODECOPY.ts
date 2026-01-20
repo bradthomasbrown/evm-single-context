@@ -15,6 +15,7 @@ export default {
         memoryExpand(context, Number(offset) + Number(size));
         const account = getStateValue(context.states, null, "accounts", [addressHex]);
         copy(context.memory!, account === null ? null : account.code, Number(destOffset), Number(offset), Number(size), true);
+        context.pc++;
     },
 
     instructionToString() {
