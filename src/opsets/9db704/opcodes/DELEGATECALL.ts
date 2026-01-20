@@ -47,17 +47,17 @@ export default {
                 context.pc++;
             } else {
                 if (context.subcontext!.reverted === null) return;
-                const [_gas, _address, _argsOffset, _argsSize, _retOffset, _retSize] = pop(context.stack, 6);
+                const [_gas, _address, _argsOffset, _argsSize, retOffset, retSize] = pop(context.stack, 6);
+                copy(context.memory!, context.subcontext!.returndata, Number(retOffset), 0, Number(retSize), false);
                 // if (context.states.at(-1)!.accounts === null) context.states.at(-1)!.accounts = new Map();
                 context.stack.push(context.subcontext!.reverted === false ? 1n : 0n);
                 // context.states.at(-1)!.accounts!.set(context.subcontext!.address!, { nonce: 1n, balance: context.subcontext!.value, code: context.subcontext!.returndata });
-                context.gas += context.subcontext!.gas - (context.subcontext!.returndata === null ? 0n : 200n * BigInt(context.subcontext!.returndata.byteLength!));
+                context.gas += context.subcontext!.gas;
                 context.blocked = false;
                 context.pc++;
             }
         } else {
             const [gas, address, argsOffset, argsSize, retOffset, retSize] = peek(context.stack, 6);
-
             const pGas = context.gas;
             memoryExpand(context, Math.max(Number(argsOffset!) + Number(argsSize!), Number(retOffset!) + Number(retSize)));
             const C_memexpand = context.gas - pGas;
@@ -91,29 +91,39 @@ export default {
                 context.blocked = true;
                 context.subcontext = createContext({
                     origin: context.origin,
-                    sender: context.address!,
-                    address: addressHex,
+                    sender: context.sender,
+                    to: addressHex,
+                    calldata: argsSize! === 0n ? null : context.memory!.slice(Number(argsOffset), Number(argsOffset) + Number(argsSize)),
+                    address: context.address!,
                     gas: C_callgas,
+                    value: context.value,
                     states: context.states,
                     accountAccessSet: context.accountAccessSet,
                     storageAccessSet: context.storageAccessSet,
                     depth: context.depth + 1,
                     code,
-                    reverted: false
+                    reverted: false,
+                    refund: context.refund,
+                    delegatecall: true
                 });
             } else {
                 context.subcontext = createContext({
                     origin: context.origin,
                     sender: context.sender,
+                    to: addressHex,
+                    calldata: argsSize! === 0n ? null : context.memory!.slice(Number(argsOffset), Number(argsOffset) + Number(argsSize)),
                     address: context.address,
                     gas: C_callgas,
+                    value: context.value,
                     states: context.states,
                     accountAccessSet: context.accountAccessSet,
                     storageAccessSet: context.storageAccessSet,
                     depth: context.depth + 1,
-                    code
+                    code,
+                    refund: context.refund,
+                    delegatecall: true
                 });
-                context.states.push({ accounts: null, transientStorage: null, storage: null });
+                // context.states.push({ accounts: null, transientStorage: null, storage: null });
                 context.blocked = true;
             }
         }
